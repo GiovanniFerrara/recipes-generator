@@ -49,3 +49,12 @@ ul ul, ol ul {
 ol ol, ul ol {
   list-style-type: lower-latin; /* Use lowercase letters for second level ordered lists */
 }
+
+
+.magic-background{
+  background-image: url('/magic-background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}

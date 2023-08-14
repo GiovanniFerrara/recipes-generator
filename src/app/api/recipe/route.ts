@@ -13,7 +13,9 @@ export async function POST(req: Request) {
       ${JSON.stringify(body)}
       
       Return the response as a HTML formatted string with tailwind classes, in order to style the result.
-      Don't add any comments or extra text, just return the recipe.`,
+      Don't add any comments or extra text, just return the recipe.
+      Don't add images.
+      `,
       },
     ],
   });

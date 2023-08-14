@@ -10,7 +10,7 @@ const RecipeGenerator = () => {
 
   const handleGenerateRecipe = async () => {
     setIsLoading(true);
-    const reponse = await fetch('/api/recipe', {
+    const response = await fetch('/api/recipe', {
       method: 'POST',
       body: JSON.stringify({
         ingredients,
@@ -19,9 +19,15 @@ const RecipeGenerator = () => {
       }),
     });
 
-    const data = await reponse.json();
+    const data = await response.json();
     setIsLoading(false);
     setRecipe(data.response);
+  };
+
+  const handleRemoveIngredient = (index: number) => {
+    const newIngredients = [...ingredients];
+    newIngredients.splice(index, 1);
+    setIngredients(newIngredients);
   };
 
   return (
@@ -29,7 +35,7 @@ const RecipeGenerator = () => {
       <div className='mb-4'>
         <h2 className='mb-2 text-xl font-semibold'>Ingredients</h2>
         {ingredients.map((ingredient, idx) => (
-          <div key={idx} className='mb-2'>
+          <div key={idx} className='mb-2 flex items-center space-x-2'>
             <input
               type='text'
               value={ingredient}
@@ -38,8 +44,14 @@ const RecipeGenerator = () => {
                 newIngredients[idx] = e.target.value;
                 setIngredients(newIngredients);
               }}
-              className='w-full rounded border p-2 text-black'
+              className='flex-grow rounded border p-2 text-black'
             />
+            <button
+              className='rounded bg-red-500 p-2 text-white'
+              onClick={() => handleRemoveIngredient(idx)}
+            >
+              Remove
+            </button>
           </div>
         ))}
         <button
@@ -53,8 +65,15 @@ const RecipeGenerator = () => {
       {/* Kitchen Type Section */}
       <div className='mb-4'>
         <h2 className='mb-2 text-xl font-semibold'>Kitchen Style</h2>
-        <div className='flex space-x-4'>
-          {['Italian', 'French', 'Asian'].map((type) => (
+        <div className='mb-2 flex flex-wrap space-x-4'>
+          {[
+            'Italian',
+            'French',
+            'Asian',
+            'Mediterranean',
+            'Mexican',
+            'Indian',
+          ].map((type) => (
             <button
               key={type}
               className={`rounded p-2 ${
