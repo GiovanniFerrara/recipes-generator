@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <main className='magic-background bg-#55B1B0 flex min-h-screen flex-col items-center justify-center p-24'>
       {/* Heading */}
-      <h1 className='mb-6 max-w-5xl rounded-lg bg-white bg-opacity-10 p-10 text-4xl font-bold text-white shadow-lg md:text-6xl'>
+      <h1 className='mb-6 max-w-5xl rounded-lg bg-black bg-opacity-20 p-10 text-4xl font-bold text-white shadow-lg md:text-6xl'>
         🍽 Voilà! The Recipe Genie 🧞‍♂️
       </h1>
 
