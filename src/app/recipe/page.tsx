@@ -5,19 +5,30 @@ const RecipeGenerator = () => {
   const [ingredients, setIngredients] = useState(['']);
   const [kitchenType, setKitchenType] = useState('');
   const [additionalInfo, setAdditionalInfo] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [recipe, setRecipe] = useState<null | string>(null);
 
-  const handleGenerateRecipe = () => {
-    // TODO: Implement your recipe generation logic here.
-    alert('Recipe generated! (Logic not implemented)');
+  const handleGenerateRecipe = async () => {
+    setIsLoading(true);
+    const reponse = await fetch('/api/recipe', {
+      method: 'POST',
+      body: JSON.stringify({
+        ingredients,
+        kitchenType,
+        additionalInfo,
+      }),
+    });
+
+    const data = await reponse.json();
+    setIsLoading(false);
+    setRecipe(data.response);
   };
 
   return (
     <div className='container mx-auto p-4'>
-      {/* Ingredients Section */}
       <div className='mb-4'>
         <h2 className='mb-2 text-xl font-semibold'>Ingredients</h2>
         {ingredients.map((ingredient, idx) => (
-          // text color black
           <div key={idx} className='mb-2'>
             <input
               type='text'
@@ -41,7 +52,7 @@ const RecipeGenerator = () => {
 
       {/* Kitchen Type Section */}
       <div className='mb-4'>
-        <h2 className='mb-2 text-xl font-semibold'>Kitchen Type</h2>
+        <h2 className='mb-2 text-xl font-semibold'>Kitchen Style</h2>
         <div className='flex space-x-4'>
           {['Italian', 'French', 'Asian'].map((type) => (
             <button
@@ -57,7 +68,6 @@ const RecipeGenerator = () => {
         </div>
       </div>
 
-      {/* Additional Information Section */}
       <div className='mb-4'>
         <h2 className='mb-2 text-xl font-semibold'>Additional Information</h2>
         <textarea
@@ -67,13 +77,23 @@ const RecipeGenerator = () => {
         ></textarea>
       </div>
 
-      {/* Generate Recipe Button */}
       <button
         className='rounded bg-green-500 p-2 text-white'
         onClick={handleGenerateRecipe}
       >
-        Generate Recipe
+        {isLoading ? '👨‍🍳 The pot is boiling...' : 'Generate Recipe'}
       </button>
+
+      {recipe && !isLoading && (
+        <div className='mt-4'>
+          <h2 className='mb-2 text-xl font-semibold'>Recipe</h2>
+          <div className='mb-2'>
+            <div
+              dangerouslySetInnerHTML={{ __html: recipe?.replace('"', '') }}
+            ></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

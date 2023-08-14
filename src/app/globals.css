@@ -25,3 +25,27 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+ul {
+  list-style-type: disc; /* Default bullet point for unordered lists */
+  padding-left: 1.5rem; /* Add some padding to push the list items away from the edge */
+}
+
+ol {
+  list-style-type: decimal; /* Default numbering for ordered lists */
+  padding-left: 1.5rem; /* Add some padding to push the list items away from the edge */
+}
+
+li {
+  margin-bottom: 0.5rem; /* Add some space between list items */
+  line-height: 1.5; /* Adjust line height for better readability */
+}
+
+/* If you want to style nested lists differently */
+ul ul, ol ul {
+  list-style-type: circle; /* Use circle for second level unordered lists */
+}
+
+ol ol, ul ol {
+  list-style-type: lower-latin; /* Use lowercase letters for second level ordered lists */
+}
