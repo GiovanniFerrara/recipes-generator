@@ -28,7 +28,7 @@ export const POST = async (req: Request): Promise<Response> => {
     ${JSON.stringify(body)}
     
     Return the response as a HTML formatted string with tailwind classes, in order to style the result.
-    Don't add any comments or extra text, just return the recipe.
+    Don't add any comments or extra text, just return the HTML recipe. Don't even add the \`\`\`html\`\`\` syntax.
     Don't add images.
     Units should be standard european (grams, meters...).
     `
