@@ -22,7 +22,7 @@ export class OpenaiService {
   };
 
   private readonly chatChatCompletionConfig = {
-    model: GPT_MODEL.GPT_4,
+    model: GPT_MODEL.GPT_3_TURBO,
     temperature: 0.5,
   };
 
