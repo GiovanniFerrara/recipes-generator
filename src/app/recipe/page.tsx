@@ -7,9 +7,10 @@ const RecipeGenerator = () => {
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [recipe, setRecipe] = useState<null | string>(null);
-  console.log({ recipe });
+
   const handleGenerateRecipe = async () => {
     setIsLoading(true);
+    setRecipe(null);
     const response = await fetch('/api/recipe', {
       method: 'POST',
       body: JSON.stringify({
@@ -128,7 +129,9 @@ const RecipeGenerator = () => {
         <div className='mt-4'>
           <h2 className='mb-2 text-xl font-semibold'>Recipe</h2>
           <div className='mb-2'>
-            <div dangerouslySetInnerHTML={{ __html: recipe }}></div>
+            <div
+              dangerouslySetInnerHTML={{ __html: recipe.replace('"', '') }}
+            ></div>
           </div>
         </div>
       )}
