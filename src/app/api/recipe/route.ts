@@ -1,13 +1,5 @@
-import { DEFAULT_SYSTEM_PROMPT, DEFAULT_TEMPERATURE } from '@/utils/app/const';
 import { OpenAIError, OpenAIStream } from '@/utils/server';
-import { ChatBody, Message } from '@/types/chat';
-
-// @ts-expect-error
-import wasmBuffer from 'node_modules/@dqbd/tiktoken/lite/tiktoken_bg.wasm?module';
-
-
-import tiktokenModel from '@dqbd/tiktoken/encoders/cl100k_base.json';
-import { Tiktoken, init } from '@dqbd/tiktoken/lite/init';
+import { ChatBody } from '@/types/chat';
 import { OpenAIModelID, OpenAIModels } from '@/types/openai';
 
 export const runtime = 'edge'
@@ -15,14 +7,6 @@ export const runtime = 'edge'
 export const POST = async (req: Request): Promise<Response> => {
   try {
     const body = (await req.json()) as ChatBody;
-    
-    await init((imports) => WebAssembly.instantiate(wasmBuffer, imports));
-    const encoding = new Tiktoken(
-
-      tiktokenModel.bpe_ranks,
-      tiktokenModel.special_tokens,
-      tiktokenModel.pat_str,
-    );
 
     let promptToSend = `You are a recipe generator. You are asked to generate a recipe with the following params:
     ${JSON.stringify(body)}
@@ -33,32 +17,7 @@ export const POST = async (req: Request): Promise<Response> => {
     Units should be standard european (grams, meters...).
     `
 
-    let temperatureToUse = 0.8;
-    if (temperatureToUse == null) {
-      temperatureToUse = DEFAULT_TEMPERATURE;
-    }
-
-    const prompt_tokens = encoding.encode(promptToSend);
-
-    let tokenCount = prompt_tokens.length;
-    let messagesToSend: Message[] = [];
-    const messages = [] as Message[];
-    const model = OpenAIModels[OpenAIModelID.GPT_4];
-
-    for (let i = messages.length - 1; i >= 0; i--) {
-      const message = messages[i];
-      const tokens = encoding.encode(message.content);
-
-      if (tokenCount + tokens.length + 1000 > model.tokenLimit) {
-        break;
-      }
-      tokenCount += tokens.length;
-      messagesToSend = [message, ...messagesToSend];
-    }
-
-    encoding.free();
-
-    const stream = await OpenAIStream(model, promptToSend, temperatureToUse, process.env.OPENAI_API_KEY!, messagesToSend);
+    const stream = await OpenAIStream(OpenAIModels[OpenAIModelID.GPT_4], promptToSend, 0.8, process.env.OPENAI_API_KEY!, []);
 
     return new Response(stream);
   } catch (error) {
