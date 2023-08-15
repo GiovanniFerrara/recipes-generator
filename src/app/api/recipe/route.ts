@@ -1,7 +1,9 @@
 import { DEFAULT_SYSTEM_PROMPT, DEFAULT_TEMPERATURE } from '@/utils/app/const';
 import { OpenAIError, OpenAIStream } from '@/utils/server';
-import * as fs from 'fs/promises';
 import { ChatBody, Message } from '@/types/chat';
+
+// @ts-expect-error
+import wasmBuffer from 'node_modules/@dqbd/tiktoken/lite/tiktoken_bg.wasm?module';
 
 
 import tiktokenModel from '@dqbd/tiktoken/encoders/cl100k_base.json';
@@ -13,8 +15,6 @@ export const runtime = 'edge'
 export const POST = async (req: Request): Promise<Response> => {
   try {
     const body = (await req.json()) as ChatBody;
-
-    const wasmBuffer = await fs.readFile('node_modules/@dqbd/tiktoken/lite/tiktoken_bg.wasm');
     
     await init((imports) => WebAssembly.instantiate(wasmBuffer, imports));
     const encoding = new Tiktoken(
