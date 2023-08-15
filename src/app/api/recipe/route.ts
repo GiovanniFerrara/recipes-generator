@@ -8,12 +8,9 @@ import tiktokenModel from '@dqbd/tiktoken/encoders/cl100k_base.json';
 import { Tiktoken, init } from '@dqbd/tiktoken/lite/init';
 import { OpenAIModelID, OpenAIModels } from '@/types/openai';
 
-export const config = {
-  runtime: 'edge',
-};
+export const runtime = 'edge'
 
 export const POST = async (req: Request): Promise<Response> => {
-  console.log('Chat request')
   try {
     const body = (await req.json()) as ChatBody;
 
