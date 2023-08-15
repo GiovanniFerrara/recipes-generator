@@ -3,10 +3,10 @@ import {
   ChatCompletionRequestMessage,
   Configuration,
   CreateChatCompletionResponseChoicesInner,
+  ErrorResponse,
   OpenAIApi,
 } from 'openai';
 import { GPT_MODEL } from './entity';
-
 
 export class OpenaiService {
   private readonly openai = new OpenAIApi(
@@ -101,14 +101,18 @@ export class OpenaiService {
 
       return response.data.choices[0];
     } catch (error) {
-      console.error('OpenAI API error:', {
-        request: {
-          messages: messages,
-          ...options,
-        },
-      });
+      const expectedError = error as {
+        message: string;
+        response: { status: number; statusText: string };
+      };
 
-      throw new Error('OpenAI is offline or too busy');
+      let errorMessage = expectedError.message;
+
+      if (expectedError.response) {
+        errorMessage = `Request failed with status code ${expectedError.response.status}: ${expectedError.response.statusText}`;
+      }
+
+      throw new Error(errorMessage);
     }
   }
 }

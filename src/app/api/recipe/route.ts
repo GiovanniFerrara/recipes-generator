@@ -3,11 +3,12 @@ import { NextApiResponse } from 'next';
 import { NextResponse } from 'next/server';
 import { CreateChatCompletionResponseChoicesInner } from 'openai';
 
+
 export async function POST(req: Request, res: NextApiResponse) {
+  console.log({res})
   const body = await req.json();
   const openai = new OpenaiService();
-  let response: CreateChatCompletionResponseChoicesInner ={};
-
+  let response: CreateChatCompletionResponseChoicesInner = {};
   try {
     response = await openai.createChatCompletion({
       messages: [
@@ -24,9 +25,10 @@ export async function POST(req: Request, res: NextApiResponse) {
         },
       ],
     });
-  } catch (e) {
-    throw new Error(JSON.stringify(e));
-  }
 
-  return NextResponse.json({ response: response.message?.content });
+    return NextResponse.json({ response: response.message?.content });
+
+  } catch (e) {
+    return new NextResponse(JSON.stringify({ error: 'Error generating recipe', details: (e as Error).message }), { status: 500 });
+  }
 }
