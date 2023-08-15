@@ -7,7 +7,7 @@ const RecipeGenerator = () => {
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [recipe, setRecipe] = useState<null | string>(null);
-
+  console.log({ recipe });
   const handleGenerateRecipe = async () => {
     setIsLoading(true);
     const response = await fetch('/api/recipe', {
@@ -19,9 +19,30 @@ const RecipeGenerator = () => {
       }),
     });
 
-    const data = await response.json();
+    if (!response.ok) {
+      setIsLoading(false);
+      // Handle error here, maybe set an error state or show a toast
+      return;
+    }
+
+    const reader = response.body?.getReader();
+    const decoder = new TextDecoder();
+    let recipeText = '';
+
+    if (reader) {
+      while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) {
+          break;
+        }
+
+        recipeText += decoder.decode(value);
+        setRecipe(recipeText);
+      }
+    }
+
     setIsLoading(false);
-    setRecipe(data.response);
   };
 
   const handleRemoveIngredient = (index: number) => {
@@ -103,13 +124,11 @@ const RecipeGenerator = () => {
         {isLoading ? '👨‍🍳 The pot is boiling...' : 'Generate Recipe'}
       </button>
 
-      {recipe && !isLoading && (
+      {recipe && (
         <div className='mt-4'>
           <h2 className='mb-2 text-xl font-semibold'>Recipe</h2>
           <div className='mb-2'>
-            <div
-              dangerouslySetInnerHTML={{ __html: recipe?.replace('"', '') }}
-            ></div>
+            <div dangerouslySetInnerHTML={{ __html: recipe }}></div>
           </div>
         </div>
       )}
